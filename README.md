@@ -1,8 +1,6 @@
-# coinex
+### Golang + Vue3 加密币模拟交易所
 
-### Vue3 加密币模拟交易所
-
-线上地址：https://www.eipistar.com/
+线上地址: https://www.eipistar.com/
 
 ![eipistar.png](resource%2Fimages%2Feipistar.png)
 
