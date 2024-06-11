@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue'
+import {onMounted, ref, watch, onBeforeUnmount} from 'vue'
 
 import {Subscribe} from "@/pkg/xws/xws";
 import {instance} from "@/singleton/wsClient";
 import type {Trade} from "@/api/trade";
-import {timestampToHourMinute, timestampToHourMinuteSecond} from "@/pkg/utils/time";
+import {timestampToHourMinuteSecond} from "@/pkg/utils/time";
 import {quantity_ratio, price_ratio} from "@/pkg/ratio/ratio";
 import {useOperationStore} from "@/stores/operationStore";
 
@@ -31,9 +31,20 @@ const tradeHandler = (symbol: string, sub: Subscribe) => {
   tableData.value.unshift(...items);
 }
 
+const judgeVisibility = (() => {
+  if (document.visibilityState === 'visible') {
+    tableData.value = []
+  }
+})
+
 onMounted(() => {
   instance.SetTradeHandler("filledOrder.vue", tradeHandler)
-})
+  document.addEventListener('visibilitychange', judgeVisibility);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', judgeVisibility);
+});
 
 watch(
     operationStore.getTrade,
