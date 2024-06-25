@@ -70,6 +70,9 @@ const loadOrderList = (() => {
           break;
         case 4:
           item.order_status_str = '已拒绝';
+          break
+        case 5:
+          item.order_status_str = '失败';
           break;
       }
     })
