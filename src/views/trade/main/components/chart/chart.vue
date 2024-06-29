@@ -74,7 +74,7 @@ const formatKLine = (line: number[]): Kline => ({
   low: line[3] / price_ratio,
   close: line[4] / price_ratio,
   roi: line[5] / quantity_ratio,
-  value: line[6] / amount_ratio,
+  value: line[6] / (amount_ratio*quantity_ratio),
 });
 
 // 创建交易量条目
