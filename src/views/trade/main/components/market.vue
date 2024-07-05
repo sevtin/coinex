@@ -49,6 +49,7 @@ const toMarket = ((ticker: Ticker) => {
     close: ticker.values[4],
     vol: ticker.values[5],
     tor: ticker.values[6],
+    pre_close: ticker.values[7],
     change: '',
     color: '',
     close_str: '',
@@ -57,11 +58,11 @@ const toMarket = ((ticker: Ticker) => {
     // 更新单个币种
     operationStore.updateTickerPrice(market.close)
   }
-  market.change = toPercentage((market.close - market.open) / market.open);
+  market.change = toPercentage((market.close - market.pre_close) / market.pre_close);
   market.color = "#FFFFF0"
-  if (market.close > market.open) {
+  if (market.close > market.pre_close) {
     market.color = '#0ECB81';
-  } else if (market.close < market.open) {
+  } else if (market.close < market.pre_close) {
     market.color = '#F6465D';
   }
   market.close_str = (market.close / price_ratio).toFixed(2);
