@@ -52,16 +52,13 @@ export const useOperationStore = defineStore('operation', {
             this.$state.depth.symbol = symbol;
             this.$state.kline.symbol = symbol;
         },
-        updateTickerPrice(price: number) {
+        setTickerPrice(price: number) {
             this.$state.ticker.close = price;
         },
         setDepth(levels: number) {
             this.$state.depth.levels = levels;
         },
-        setKline(intvl: number) {
-            this.$state.kline.intvl = intvl;
-        },
-        updateKlineIntvl(intvl: number) {
+        setKlineIntvl(intvl: number) {
             this.$state.kline.intvl = intvl;
         },
         updateOrderVersion() {

@@ -1,13 +1,17 @@
 import bigInt from "big-integer";
+import xhttp from "@/pkg/xhttp/xhttp";
+import type {User} from "@/api/user";
 
 // {"topic":"BTCUSDT@KLINE_1","data":[[1710748560,20,20,20,20,10,200]]}
 
-export interface Kline {
-    time: number;//时间戳
-    open: number;
-    high: number;
-    low: number;
+export interface KlineInfo {
+    ts:    number;
+    open:  number;
+    high:  number;
+    low:   number;
     close: number;
+    vol:   number;
+    tor:   number;
 }
 
 export interface Volume {
@@ -21,3 +25,13 @@ export interface Interval {
     intvl: number
 }
 
+
+export interface KlineResp {
+    code: number
+    msg: string
+    data:KlineInfo[]
+}
+
+export function GetKlines(params?: object) {
+    return xhttp.get<KlineResp>("/api/market/klines", params)
+}

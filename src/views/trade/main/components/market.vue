@@ -56,7 +56,7 @@ const toMarket = ((ticker: Ticker) => {
   };
   if (market.symbol === operationStore.getTicker.symbol && market.intvl === operationStore.getTicker.intvl) {
     // 更新单个币种
-    operationStore.updateTickerPrice(market.close)
+    operationStore.setTickerPrice(market.close)
   }
   market.change = toPercentage((market.close - market.pre_close) / market.pre_close);
   market.color = "#FFFFF0"

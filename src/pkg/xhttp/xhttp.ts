@@ -45,12 +45,14 @@ class HttpClient {
         );
         this.instance.interceptors.response.use(
             (response) => {
+                /*
                 if (response.data.code > 200) {
                     ElMessage({
                         message: data.message || '服务器返回异常',
                         type: 'warning',
                     });
                 }
+                 */
                 return response
             },
             (error) => {

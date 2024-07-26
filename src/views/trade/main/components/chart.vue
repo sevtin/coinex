@@ -30,7 +30,7 @@ const intervalHandler = ((intvl: any) => {
   let oldTopic = symbol + "@KLINE_" + oldIntvl.toString()
   let newTopic = symbol + "@KLINE_" + intvl
   oldIntvl = intvl
-  operationStore.updateKlineIntvl(intvl)
+  operationStore.setKlineIntvl(intvl)
   instance.updateUnSubscribe(oldTopic, newTopic)
 })
 

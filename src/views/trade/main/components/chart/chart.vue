@@ -2,12 +2,13 @@
 
 import {onMounted, ref, watch} from "vue";
 import {createChart, IChartApi, ISeriesApi} from "lightweight-charts";
-import ValueView from "@/views/trade/main/components/chart/value.vue"
 import type {Subscribe} from "@/pkg/xws/xws";
+import type {KlineInfo} from "@/api/kline";
 import {instance} from "@/singleton/wsClient";
 import {quantity_ratio, price_ratio, amount_ratio} from "@/pkg/ratio/ratio";
-
+import {GetKlines, KlineResp} from "@/api/kline";
 import {useOperationStore} from "@/stores/operationStore";
+import {timestampBarFormat} from "@/pkg/utils/time";
 
 const operationStore = useOperationStore()
 
@@ -17,8 +18,17 @@ interface Kline {
   high: number;
   low: number;
   close: number;
-  roi: number;
   value: number;
+  roi: number;
+}
+
+interface BarVal {
+  time: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  val: number;
 }
 
 export interface Volume {
@@ -30,10 +40,13 @@ export interface Volume {
 const chartData: Kline[] = [];
 const volumeData: Volume[] = [];
 const legendRef = ref<HTMLElement | null>(null);
+const hoveredData = ref<BarVal | null>(null);
 
 let chart: IChartApi;
 let candleSeries: ISeriesApi<"Candlestick">;
 let volumeSeries: ISeriesApi<"Histogram">;
+let loading = false
+let nodata = false
 
 const klineHandler = (symbol: string, intvl: number, sub: Subscribe) => {
   if (symbol != operationStore.getTicker.symbol || intvl != operationStore.getKline.intvl) {
@@ -44,9 +57,11 @@ const klineHandler = (symbol: string, intvl: number, sub: Subscribe) => {
   if (!list || list.length === 0) {
     return
   }
+  let fit = false;
   if (list.length > 1 || chartData.length === 0) {
     chartData.splice(0, chartData.length, ...list.map(formatKLine));
     volumeData.splice(0, volumeData.length, ...chartData.map(createVolume));
+    fit = true
   } else {
     let curLine = formatKLine(list[0])
     let curVol = createVolume(curLine)
@@ -63,7 +78,10 @@ const klineHandler = (symbol: string, intvl: number, sub: Subscribe) => {
   // 设置 K 线和交易量数据
   candleSeries.setData(chartData);
   volumeSeries.setData(volumeData);
-  chart.timeScale().fitContent()
+  if (fit) {
+    nodata = false;
+    chart.timeScale().fitContent()
+  }
 }
 
 // 时间/开盘/最高/最低/收盘/成交量/成交额
@@ -73,8 +91,18 @@ const formatKLine = (line: number[]): Kline => ({
   high: line[2] / price_ratio,
   low: line[3] / price_ratio,
   close: line[4] / price_ratio,
-  roi: line[5] / quantity_ratio,
-  value: line[6] / (amount_ratio*quantity_ratio),
+  value: line[5] / quantity_ratio,
+  roi: line[6] / (amount_ratio * quantity_ratio),
+});
+
+const formatKLineInfo = (line: KlineInfo): Kline => ({
+  time: line.ts,
+  open: line.open / price_ratio,
+  high: line.high / price_ratio,
+  low: line.low / price_ratio,
+  close: line.close / price_ratio,
+  value: line.vol / quantity_ratio,
+  roi: line.tor / (amount_ratio * quantity_ratio),
 });
 
 // 创建交易量条目
@@ -139,45 +167,29 @@ onMounted(() => {
   chart.priceScale('').applyOptions({
     scaleMargins: {top: 0.8, bottom: 0}
   });
-  // 格式化并设置数据
-  // const volumeData = chartData.map(item => ({
-  //   time: item.time,
-  //   value: item.value,
-  //   color: 'rgba(82, 219, 237, 0.56)'
-  // }));
-  // // 设置 K 线和交易量数据
-  // candleSeries.setData(chartData);
-  // volumeSeries.setData(volumeData);
 
-  // 配置并添加图例
-  // 图例的创建和更新是本项目的亮点。我创建了一个图例元素，并将其放置在图表容器中的合适位置。图例的内容基于图表上当前焦点的数据动态更新。
-  const symbolName = 'ABC/USD';
-  const container = document.getElementById('candlestick');
-  // const legend = document.createElement('div');
-  // legend.style.position = 'absolute';
-  // legend.style.top = 'calc(100% + 10px)';
-  // legend.style.left = '0';
-  // legend.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-  // legend.style.color = '#fff';
-  // legend.style.padding = '5px';
-  // legend.style.fontSize = '12px';
-  // container.parentNode?.appendChild(legend);
-  // legendRef.value = legend;
-  // container.appendChild(legend);
-
-  // 获取最后一条数据的方法
-  const getLastBar = () => {
-
-  };
-
-  // 设置图例 HTML 的方法
-  const setTooltipHtml = (name, open, high, low, close, roi, volume) => {
-
-  };
+  chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
+    const logicalRange = chart.timeScale().getVisibleLogicalRange();
+    if (logicalRange !== null && logicalRange.from < 0 && logicalRange.to >= 1 && !loading && !nodata) {
+      loadMoreData();
+    }
+  });
 
   // 更新图例内容的方法
-  const updateLegend = param => {
-
+  const updateLegend = async param => {
+    if (!param || !param.time || param.logical<0) {
+      hoveredData.value = null
+      return;
+    }
+    let bar = {
+      time: timestampBarFormat(param.time*1000),
+      open: param.seriesData.get(candleSeries).open,
+      high: param.seriesData.get(candleSeries).high,
+      low: param.seriesData.get(candleSeries).low,
+      close: param.seriesData.get(candleSeries).close,
+      val: param.seriesData.get(volumeSeries).value,
+    }
+    hoveredData.value = bar
   };
 
   // 订阅十字准线移动事件以更新图例
@@ -197,17 +209,61 @@ watch(
     (newKline, oldKline) => {
       chartData.length = 0;
       volumeData.length = 0;
+      nodata = false;
       candleSeries.setData(chartData);
       volumeSeries.setData(volumeData);
       chart.timeScale().fitContent()
     }
 );
+
+function loadMoreData() {
+  loading = true;
+  if (!chartData || chartData.length === 0 || chartData[0].time <= 0) {
+    return;
+  }
+  console.log("chartData[0]:", chartData[0])
+  let marketId = operationStore.getTicker.market_id;
+  let intvl = operationStore.getKline.intvl
+  GetKlines({
+    "market_id": marketId,
+    "last_ts": chartData[0].time,
+    "intvl": intvl,
+    "limit": 50,
+  }).then((resp: KlineResp) => {
+    if (resp.code === 0) {
+      if (!resp.data || resp.data.length === 0) {
+        nodata = true;
+      }
+      if (resp.data && resp.data.length > 0 && marketId === operationStore.getTicker.market_id && intvl === operationStore.getKline.intvl) {
+        console.log("resp.data.length:", resp.data.length)
+        let reversedArray = [...resp.data].reverse();
+        chartData.unshift(...reversedArray.map(formatKLineInfo));
+        console.log("chartData length:", chartData.length)
+        volumeData.splice(0, volumeData.length, ...chartData.map(createVolume));
+        // 设置 K 线和交易量数据
+        candleSeries.setData(chartData);
+        volumeSeries.setData(volumeData);
+      }
+    }
+    loading = false;
+  }).catch((err) => {
+    loading = false;
+    console.log(err)
+  })
+}
 </script>
 
 <template>
   <div class="chart-view">
     <div class="value-view">
-      <ValueView/>
+      <div v-if="hoveredData" class="items-view">
+        <div class="value-item">Time: {{ hoveredData.time }}</div>
+        <div class="value-item">Open: {{ hoveredData.open }}</div>
+        <div class="value-item">Close: {{ hoveredData.close }}</div>
+        <div class="value-item">High: {{ hoveredData.high }}</div>
+        <div class="value-item">Low: {{ hoveredData.low }}</div>
+        <div class="value-item">Value: {{ hoveredData.val }}</div>
+      </div>
     </div>
     <div id="chart-container">
       <div id="candlestick"></div>
@@ -228,8 +284,23 @@ watch(
   //border: 1px solid #1E2329;
 }
 
+.items-view {
+  width: 100%;
+  height: 40px;
+  display: flex;
+}
+
+.value-item {
+  padding: 8px;
+  min-width: 50px;
+  text-align: center;
+  color: #d9ecff;
+  font-size: 14px;
+}
+
 #chart-container {
   width: 848px;
   height: 494px;
 }
+
 </style>

@@ -52,8 +52,8 @@ const checkAmount = (_: any, value: any, callback: any) => {
   } else {
     if (value <= 0) {
       callback(new Error('Amount must be greater than 0'))
-    } else if (value > 100000) {
-      callback(new Error('Amount must be less than 100000'))
+    } else if (value > 1000000) {
+      callback(new Error('Amount must be less than 1000000'))
     } else {
       callback()
     }

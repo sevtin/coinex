@@ -2,6 +2,8 @@
 import {ref, onMounted} from 'vue';
 import {orderList} from "@/api/order";
 import type {OrderInfo} from "@/api/order";
+import {createGuest} from "@/api/user";
+import {instance} from "@/singleton/wsClient";
 import {timestampFormat} from "@/pkg/utils/time";
 import {default as vElTableInfiniteScroll} from "el-table-infinite-scroll";
 import {quantity_ratio, price_ratio, amount_ratio} from "@/pkg/ratio/ratio";
@@ -26,6 +28,14 @@ onMounted(() => {
 const loadOrderList = (() => {
   let oldLastId = lastId;
   orderList({"history": props.history, "limit": pageLimit, "last_id": lastId}).then((res) => {
+    if (res.code===605) {
+      createGuest().then((resp) => {
+        if (resp.code == 0) {
+          instance.reconnect()
+        }
+      })
+      return;
+    }
     if (!res.data) {
       if (lastId === "0") {
         tableData.value = [];

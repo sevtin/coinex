@@ -13,5 +13,6 @@ export interface Market {
     tor: number;
     change: string;
     color: string;
-    close_str: string
+    close_str: string;
+    pre_close: number;
 }

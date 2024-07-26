@@ -15,7 +15,7 @@ onMounted(() => {
   operationStore.setMarket(1440);
   operationStore.setTicker(1, 'BTCUSDT', 1440, 0, 0);
   operationStore.setDepth(10);
-  operationStore.setKline(1);
+  operationStore.setKlineIntvl(1);
 
   let token = Cookies.get('token') as string
   let topics = ["MARKET@1440", "BTCUSDT@TICKER_1440", "BTCUSDT@KLINE_1", "BTCUSDT@DEPTH_10", "BTCUSDT@TRADE"]
