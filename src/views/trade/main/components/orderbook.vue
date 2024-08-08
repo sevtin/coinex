@@ -6,8 +6,8 @@ import {onMounted, ref, watch} from "vue";
 import {Subscribe} from "@/pkg/xws/xws";
 import {instance} from "@/singleton/wsClient";
 import type {Depth, DepthItem} from "@/api/depth";
-import {quantity_ratio, price_ratio} from "@/pkg/ratio/ratio";
 import {useOperationStore} from "@/stores/operationStore";
+import {stringToNumber} from "@/pkg/utils/number";
 
 const operationStore = useOperationStore()
 
@@ -26,7 +26,7 @@ const depthHandler = (symbol: string, levels: number, sub: Subscribe) => {
   bids.value = getDepthItems(depth.bids, depth.ts, true)
 }
 
-const getDepthItems = (values: number[][], ts: number, bid: boolean): DepthItem[] => {
+const getDepthItems = (values: string[][], ts: number, bid: boolean): DepthItem[] => {
   if (!values) {
     return []
   }
@@ -34,13 +34,9 @@ const getDepthItems = (values: number[][], ts: number, bid: boolean): DepthItem[
   values.forEach((it) => {
     let item = {
       ts: ts,
-      price: it[0],
-      amount: it[1],
-      price_str: '',
-      amount_str: ''
+      price: stringToNumber(it[0]),
+      amount: stringToNumber(it[1])
     }
-    item.amount_str = (item.amount / quantity_ratio).toFixed(2)
-    item.price_str = (item.price / price_ratio).toFixed(2)
     if (bid) {
       items.push(item);
     } else {

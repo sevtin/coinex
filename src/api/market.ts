@@ -5,14 +5,15 @@ export interface Market {
     symbol: string;
     intvl: number;
     time: string;
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    vol: number;
-    tor: number;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    vol: string;
+    tor: string;
     change: string;
     color: string;
-    close_str: string;
-    pre_close: number;
+    pre_close: string;
+    close_val: number;
+    pre_close_val: number;
 }

@@ -52,20 +52,21 @@ const toMarket = ((ticker: Ticker) => {
     pre_close: ticker.values[7],
     change: '',
     color: '',
-    close_str: '',
   };
+  market.close_val = parseFloat(market.close);
+  market.pre_close_val = parseFloat(market.pre_close);
+
   if (market.symbol === operationStore.getTicker.symbol && market.intvl === operationStore.getTicker.intvl) {
     // 更新单个币种
     operationStore.setTickerPrice(market.close)
   }
-  market.change = toPercentage((market.close - market.pre_close) / market.pre_close);
+  market.change = toPercentage((market.close_val - market.pre_close_val) / market.pre_close_val);
   market.color = "#FFFFF0"
-  if (market.close > market.pre_close) {
+  if (market.close_val > market.pre_close_val) {
     market.color = '#0ECB81';
-  } else if (market.close < market.pre_close) {
+  } else if (market.close_val < market.pre_close_val) {
     market.color = '#F6465D';
   }
-  market.close_str = (market.close / price_ratio).toFixed(2);
   return market;
 })
 
@@ -121,8 +122,8 @@ const onRowClick = (row: any, column: any, event: Event) => {
         @row-click="onRowClick"
     >
       <el-table-column fixed prop="symbol" label="币对" width="90"/>
-      <el-table-column prop="close_str" label="价格" width="105"/>
-      <el-table-column label="涨跌幅" width="105">
+      <el-table-column prop="close" label="价格" width="130"/>
+      <el-table-column label="涨跌幅" width="80">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{

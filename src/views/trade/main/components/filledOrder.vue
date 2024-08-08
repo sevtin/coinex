@@ -5,8 +5,8 @@ import {Subscribe} from "@/pkg/xws/xws";
 import {instance} from "@/singleton/wsClient";
 import type {Trade} from "@/api/trade";
 import {timestampToHourMinuteSecond} from "@/pkg/utils/time";
-import {quantity_ratio, price_ratio} from "@/pkg/ratio/ratio";
 import {useOperationStore} from "@/stores/operationStore";
+import {stringToNumber} from "@/pkg/utils/number";
 
 const operationStore = useOperationStore()
 
@@ -17,18 +17,22 @@ const tradeHandler = (symbol: string, sub: Subscribe) => {
     return
   }
 
-  let list = sub.data as number[][]
+  let list = sub.data as any[][]
   const items = list.map((item) => {
     const m = {
       time: timestampToHourMinuteSecond(item[0]),
-      price: (item[1] / price_ratio).toFixed(2),
-      amount: (item[2] / quantity_ratio).toFixed(2),
+      price: stringToNumber(item[1]),
+      amount: stringToNumber(item[2]),
       direction: item[3],
       color: item[3] === 1 ? '#0ECB81' : item[3] === 2 ? '#F6465D' : '#FFFFF0',
     };
     return m;
   });
-  tableData.value.unshift(...items);
+  if (items.length===50) {
+    tableData.value = items
+  }else {
+    tableData.value.unshift(...items);
+  }
 }
 
 const judgeVisibility = (() => {
@@ -63,8 +67,8 @@ watch(
         class="table-style"
         style="height: 800px; width: 100%"
     >
-      <el-table-column fixed prop="time" label="时间" width="100"/>
-      <el-table-column label="价格" width="110">
+      <el-table-column fixed prop="time" label="时间" width="80"/>
+      <el-table-column label="价格" width="120">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{
@@ -72,7 +76,7 @@ watch(
             }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数量" width="110">
+      <el-table-column label="数量" width="120">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{

@@ -3,7 +3,6 @@ import {ref, onMounted, watch} from 'vue';
 import {orderList, cancelOrder} from "@/api/order";
 import type {OrderInfo} from "@/api/order";
 import {timestampFormat} from "@/pkg/utils/time";
-import {quantity_ratio, price_ratio, amount_ratio} from "@/pkg/ratio/ratio";
 import {default as vElTableInfiniteScroll} from "el-table-infinite-scroll";
 import {useOperationStore} from "@/stores/operationStore";
 
@@ -49,12 +48,11 @@ const loadOrderList = (() => {
     }
     lastId = list[list.length - 1].order_id.toString();
     list.forEach((item) => {
-      item.ts_str = timestampFormat(item.created_ts);
+      item.ts_str = timestampFormat(item.created_ts*1000);
       item.side_str = item.side === 1 ? '买' : '卖';
       item.order_type_str = item.order_type === 1 ? '市价' : '限价';
-      item.price_str = item.order_type === 1 ? '市价' : (item.price / price_ratio).toFixed(2)
-      item.qty_str = (item.filled_qty / quantity_ratio) + "/" + (item.unfilled_qty / quantity_ratio);
-      item.filled_amt_str = (item.filled_amt / amount_ratio).toFixed(2);
+      item.price_str = item.order_type === 1 ? '市价' : item.price
+      item.qty_str = item.filled_qty+ "/" + item.unfilled_qty;
       switch (item.order_status) {
         case 0:
           item.order_status_str = '挂单中';
@@ -121,13 +119,13 @@ const onCancelOrder = (row: OrderInfo) => {
     >
       <el-table-column prop="ts_str" label="时间" width="180"/>
       <el-table-column prop="order_id" label="订单ID" width="180"/>
-      <el-table-column prop="symbol" label="交易对" width="180"/>
-      <el-table-column prop="side_str" label="买/卖" width="180"/>
-      <el-table-column prop="order_type_str" label="订单类型" width="180"/>
-      <el-table-column prop="order_status_str" label="订单状态" width="180"/>
-      <el-table-column prop="price_str" label="委托价格" width="180"/>
-      <el-table-column prop="qty_str" label="成交/未成交数量" width="180"/>
-      <el-table-column prop="filled_amt_str" label="成交金额" width="180"/>
+      <el-table-column prop="symbol" label="交易对" width="140"/>
+      <el-table-column prop="side_str" label="买/卖" width="100"/>
+      <el-table-column prop="order_type_str" label="订单类型" width="140"/>
+      <el-table-column prop="order_status_str" label="订单状态" width="140"/>
+      <el-table-column prop="price_str" label="委托价格" width="200"/>
+      <el-table-column prop="qty_str" label="成交/未成交数量" width="320"/>
+      <el-table-column prop="filled_amt" label="成交金额" width="220"/>
       <el-table-column fixed="right" label="操作" width="140" v-if="!history">
         <template #default="scope">
           <div v-if="scope.row.order_status < 2">

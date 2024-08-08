@@ -15,10 +15,10 @@ export interface OrderInfo {
     side: number;
     order_type: number;
     order_status: number;
-    price: number;
-    unfilled_qty: number;
-    filled_qty: number;
-    filled_amt: number;
+    price: string;
+    unfilled_qty: string;
+    filled_qty: string;
+    filled_amt: string;
     fee_rate: number;
     fee: number;
     ver: number;
@@ -28,9 +28,9 @@ export interface OrderInfo {
     side_str: string;
     order_type_str: string;
     order_status_str: string;
+
     price_str: string;
     qty_str: string;
-    filled_amt_str: string;
 }
 
 enum Side {

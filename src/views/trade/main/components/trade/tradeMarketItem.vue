@@ -76,7 +76,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         market_id: operationStore.getTicker.market_id,
         order_type: props.order.order_type,
         side: props.order.side,
-        unfilled_qty: ruleForm.amount * quantity_ratio
+        unfilled_qty: ruleForm.amount.toString()
       }).then((res) => {
         setTimeout(() => {
           operationStore.updateOrderVersion()

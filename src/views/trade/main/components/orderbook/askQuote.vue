@@ -18,8 +18,8 @@ const props = defineProps({
         :show-header="false"
         class="table-style"
     >
-      <el-table-column fixed prop="price_str" width="160"/>
-      <el-table-column fixed prop="amount_str" width="160"/>
+      <el-table-column fixed prop="price" width="160"/>
+      <el-table-column fixed prop="amount" width="160"/>
       <template v-slot:empty>
         <div class="noData">暂无数据</div>
       </template>

@@ -6,25 +6,13 @@ import type {User} from "@/api/user";
 
 export interface KlineInfo {
     ts:    number;
-    open:  number;
-    high:  number;
-    low:   number;
-    close: number;
-    vol:   number;
-    tor:   number;
+    open:  string;
+    high:  string;
+    low:   string;
+    close: string;
+    vol:   string;
+    tor:   string;
 }
-
-export interface Volume {
-    time: number;
-    value: number;
-    color: string;
-}
-
-export interface Interval {
-    name: string;
-    intvl: number
-}
-
 
 export interface KlineResp {
     code: number

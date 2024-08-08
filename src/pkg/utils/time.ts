@@ -20,6 +20,7 @@ export function timestampToHourMinuteSecond(timestampSeconds: number): string {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
+        hour12: false, // 添加此行以使用24小时制
     };
     const date = new Date(timestampSeconds * 1000); // 将秒转换为毫秒
     // 使用 Intl.DateTimeFormat 对象格式化时间

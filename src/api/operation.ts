@@ -15,8 +15,8 @@ export interface Ticker {
     market_id: number;
     symbol: string;
     intvl: number;
-    open: number;
-    close: number;
+    open: string;
+    close: string;
     color: number;
 }
 

@@ -4,7 +4,7 @@ export interface Ticker {
     market_id: number;
     symbol: string;
     intvl: number;
-    values: number[];
+    values: any[];
 }
 
 

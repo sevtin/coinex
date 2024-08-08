@@ -4,14 +4,12 @@ export interface Depth {
     market_id: number;
     symbol: string;
     levels: number;
-    bids: number[][];
-    asks: number[][];
+    bids: string[][];
+    asks: string[][];
 }
 
 export interface DepthItem {
     ts: number;//时间戳
-    price: number
-    amount: number
-    price_str: string
-    amount_str: string
+    price: string
+    amount: string
 }

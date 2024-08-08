@@ -5,10 +5,10 @@ import {createChart, IChartApi, ISeriesApi} from "lightweight-charts";
 import type {Subscribe} from "@/pkg/xws/xws";
 import type {KlineInfo} from "@/api/kline";
 import {instance} from "@/singleton/wsClient";
-import {quantity_ratio, price_ratio, amount_ratio} from "@/pkg/ratio/ratio";
 import {GetKlines, KlineResp} from "@/api/kline";
 import {useOperationStore} from "@/stores/operationStore";
 import {timestampBarFormat} from "@/pkg/utils/time";
+import {stringToNumber} from "@/pkg/utils/number";
 
 const operationStore = useOperationStore()
 
@@ -53,7 +53,7 @@ const klineHandler = (symbol: string, intvl: number, sub: Subscribe) => {
     return
   }
 
-  let list = sub.data as number[][]
+  let list = sub.data as any[][]
   if (!list || list.length === 0) {
     return
   }
@@ -85,30 +85,30 @@ const klineHandler = (symbol: string, intvl: number, sub: Subscribe) => {
 }
 
 // 时间/开盘/最高/最低/收盘/成交量/成交额
-const formatKLine = (line: number[]): Kline => ({
+const formatKLine = (line: any[]): Kline => ({
   time: line[0],
-  open: line[1] / price_ratio,
-  high: line[2] / price_ratio,
-  low: line[3] / price_ratio,
-  close: line[4] / price_ratio,
-  value: line[5] / quantity_ratio,
-  roi: line[6] / (amount_ratio * quantity_ratio),
+  open: stringToNumber(line[1]),
+  high: stringToNumber(line[2]),
+  low: stringToNumber(line[3]),
+  close: stringToNumber(line[4]),
+  value: stringToNumber(line[5]),
+  roi: stringToNumber(line[6]),
 });
 
 const formatKLineInfo = (line: KlineInfo): Kline => ({
   time: line.ts,
-  open: line.open / price_ratio,
-  high: line.high / price_ratio,
-  low: line.low / price_ratio,
-  close: line.close / price_ratio,
-  value: line.vol / quantity_ratio,
-  roi: line.tor / (amount_ratio * quantity_ratio),
+  open: stringToNumber(line.open),
+  high: stringToNumber(line.high),
+  low: stringToNumber(line.low),
+  close: stringToNumber(line.close),
+  value: stringToNumber(line.vol),
+  roi: stringToNumber(line.tor),
 });
 
 // 创建交易量条目
 const createVolume = (kline: Kline): Volume => ({
   time: kline.time,
-  value: kline.value,
+  value: stringToNumber(kline.value),
   color: 'rgba(82, 219, 237, 0.56)',
 });
 
@@ -291,11 +291,11 @@ function loadMoreData() {
 }
 
 .value-item {
-  padding: 8px;
+  padding: 4px;
   min-width: 50px;
   text-align: center;
   color: #d9ecff;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 #chart-container {

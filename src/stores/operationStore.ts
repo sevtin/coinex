@@ -34,7 +34,7 @@ export const useOperationStore = defineStore('operation', {
         setMarket(intvl: number) {
             this.$state.mrket.intvl = intvl
         },
-        setTicker(market_id: number, symbol: string, intvl: number, open: number, close: number) {
+        setTicker(market_id: number, symbol: string, intvl: number, open: string, close: string) {
             this.$state.ticker.market_id = market_id;
             this.$state.ticker.symbol = symbol;
             this.$state.ticker.intvl = intvl;
@@ -52,7 +52,7 @@ export const useOperationStore = defineStore('operation', {
             this.$state.depth.symbol = symbol;
             this.$state.kline.symbol = symbol;
         },
-        setTickerPrice(price: number) {
+        setTickerPrice(price: string) {
             this.$state.ticker.close = price;
         },
         setDepth(levels: number) {
