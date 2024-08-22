@@ -7,7 +7,7 @@ import {Subscribe} from "@/pkg/xws/xws";
 import {instance} from "@/singleton/wsClient";
 import type {Depth, DepthItem} from "@/api/depth";
 import {useOperationStore} from "@/stores/operationStore";
-import {stringToNumber} from "@/pkg/utils/number";
+import {stringToNumber, stringToPrice} from "@/pkg/utils/number";
 
 const operationStore = useOperationStore()
 
@@ -34,7 +34,7 @@ const getDepthItems = (values: string[][], ts: number, bid: boolean): DepthItem[
   values.forEach((it) => {
     let item = {
       ts: ts,
-      price: stringToNumber(it[0]),
+      price: stringToPrice(it[0]),
       amount: stringToNumber(it[1])
     }
     if (bid) {

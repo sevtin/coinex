@@ -6,7 +6,7 @@ import {instance} from "@/singleton/wsClient";
 import type {Trade} from "@/api/trade";
 import {timestampToHourMinuteSecond} from "@/pkg/utils/time";
 import {useOperationStore} from "@/stores/operationStore";
-import {stringToNumber} from "@/pkg/utils/number";
+import {stringToNumber, stringToPrice} from "@/pkg/utils/number";
 
 const operationStore = useOperationStore()
 
@@ -21,7 +21,7 @@ const tradeHandler = (symbol: string, sub: Subscribe) => {
   const items = list.map((item) => {
     const m = {
       time: timestampToHourMinuteSecond(item[0]),
-      price: stringToNumber(item[1]),
+      price: stringToPrice(item[1]),
       amount: stringToNumber(item[2]),
       direction: item[3],
       color: item[3] === 1 ? '#0ECB81' : item[3] === 2 ? '#F6465D' : '#FFFFF0',

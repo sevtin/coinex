@@ -25,7 +25,6 @@ import {reactive, ref, computed, PropType} from 'vue'
 import type {FormInstance, FormRules} from 'element-plus'
 import type {Order} from "@/api/order";
 import {createOrder} from "@/api/order";
-import {quantity_ratio} from "@/pkg/ratio/ratio";
 import {useOperationStore} from "@/stores/operationStore";
 
 const operationStore = useOperationStore()
@@ -80,6 +79,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       }).then((res) => {
         setTimeout(() => {
           operationStore.updateOrderVersion()
+          operationStore.updateBalances()
         }, 2000);
       })
     } else {

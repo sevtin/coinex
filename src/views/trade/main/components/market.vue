@@ -122,8 +122,8 @@ const onRowClick = (row: any, column: any, event: Event) => {
         @row-click="onRowClick"
     >
       <el-table-column fixed prop="symbol" label="币对" width="90"/>
-      <el-table-column prop="close" label="价格" width="130"/>
-      <el-table-column label="涨跌幅" width="80">
+      <el-table-column prop="close" label="价格" width="110"/>
+      <el-table-column label="涨跌幅" width="100">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{

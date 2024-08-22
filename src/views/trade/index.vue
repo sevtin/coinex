@@ -23,10 +23,12 @@ onMounted(() => {
     createGuest().then((resp) => {
       if (resp.code == 0) {
         instance.connect(topics)
+        operationStore.updateBalances()
       }
     })
   } else {
     instance.connect(topics)
+    operationStore.updateBalances()
   }
 })
 

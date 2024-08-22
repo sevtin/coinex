@@ -183,10 +183,10 @@ onMounted(() => {
     }
     let bar = {
       time: timestampBarFormat(param.time*1000),
-      open: param.seriesData.get(candleSeries).open,
-      high: param.seriesData.get(candleSeries).high,
-      low: param.seriesData.get(candleSeries).low,
-      close: param.seriesData.get(candleSeries).close,
+      open: param.seriesData.get(candleSeries).open.toFixed(2),
+      high: param.seriesData.get(candleSeries).high.toFixed(2),
+      low: param.seriesData.get(candleSeries).low.toFixed(2),
+      close: param.seriesData.get(candleSeries).close.toFixed(2),
       val: param.seriesData.get(volumeSeries).value,
     }
     hoveredData.value = bar

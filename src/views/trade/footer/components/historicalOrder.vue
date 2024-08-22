@@ -6,6 +6,9 @@ import {createGuest} from "@/api/user";
 import {instance} from "@/singleton/wsClient";
 import {timestampFormat} from "@/pkg/utils/time";
 import {default as vElTableInfiniteScroll} from "el-table-infinite-scroll";
+import {useOperationStore} from "@/stores/operationStore";
+
+const operationStore = useOperationStore()
 
 const props = defineProps({
   history: {
@@ -31,6 +34,7 @@ const loadOrderList = (() => {
       createGuest().then((resp) => {
         if (resp.code == 0) {
           instance.reconnect()
+          operationStore.updateBalances()
         }
       })
       return;
