@@ -68,7 +68,7 @@ watch(
         style="height: 800px; width: 100%"
     >
       <el-table-column fixed prop="time" label="时间" width="80"/>
-      <el-table-column label="价格" width="120">
+      <el-table-column label="价格" width="110">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{
@@ -76,7 +76,7 @@ watch(
             }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数量" width="120">
+      <el-table-column label="数量" width="130">
         <template #default="scope">
           <span
               :style="{ color: scope.row.color}">{{

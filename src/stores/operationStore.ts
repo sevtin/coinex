@@ -1,5 +1,7 @@
 import {defineStore} from 'pinia'
 import {Operation, Market, Ticker, Trade, Depth, Kline, Order} from "@/api/operation";
+import type {Balance} from "@/api/balance";
+import {BalanceResp, GetBalances} from "@/api/balance";
 
 export const useOperationStore = defineStore('operation', {
     state: (): Operation => ({
@@ -9,6 +11,7 @@ export const useOperationStore = defineStore('operation', {
         depth: {} as Depth,
         kline: {} as Kline,
         order: {version: 0} as Order,
+        Balances: [] as Balance[]
     }),
     getters: {
         getMarket(): Market {
@@ -29,6 +32,9 @@ export const useOperationStore = defineStore('operation', {
         getOrder(): number {
             return this.order
         },
+        getBalances(): Balance[] {
+            return this.Balances
+        }
     },
     actions: {
         setMarket(intvl: number) {
@@ -64,6 +70,19 @@ export const useOperationStore = defineStore('operation', {
         updateOrderVersion() {
             this.$state.order.version++;
         },
+        updateBalances() {
+            GetBalances().then((resp: BalanceResp) => {
+                if (resp.data.length>0) {
+                    this.$patch((state) => {
+                        state.Balances = resp.data;
+                    });
+                }
+                console.log(resp)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
     },
-    persist: false
+    persist: false,
+    deep: true
 })

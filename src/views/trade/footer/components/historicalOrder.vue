@@ -34,7 +34,6 @@ const loadOrderList = (() => {
       createGuest().then((resp) => {
         if (resp.code == 0) {
           instance.reconnect()
-          operationStore.updateBalances()
         }
       })
       return;

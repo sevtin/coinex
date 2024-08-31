@@ -50,9 +50,15 @@ const checkPrice = (_: any, value: any, callback: any) => {
   if (!value) {
     return callback(new Error('Please input the Price'))
   }
-  if (!Number.isInteger(value)) {
-    callback(new Error('Please input digits'))
+
+  if (!Number.isFinite(value)) {
+    callback(new Error('Please input a valid number with up to 2 decimal places'));
   } else {
+    const floatRegex = /^\d+(\.\d{1,2})?$/;
+    if (!floatRegex.test(value)) {
+      callback(new Error('Please input a valid number with up to 2 decimal places'));
+      return
+    }
     if (value <= 0) {
       callback(new Error('Price must be greater than 0'))
     } else if (value > 1000000) {
@@ -67,9 +73,15 @@ const checkAmount = (_: any, value: any, callback: any) => {
   if (!value) {
     return callback(new Error('Please input the Amount'))
   }
-  if (!Number.isInteger(value)) {
-    callback(new Error('Please input digits'))
+
+  if (!Number.isFinite(value)) {
+    callback(new Error('Please input a valid number with up to 8 decimal places'));
   } else {
+    const floatRegex = /^\d+(\.\d{1,8})?$/;
+    if (!floatRegex.test(value)) {
+      callback(new Error('Please input a valid number with up to 8 decimal places'));
+      return
+    }
     if (value <= 0) {
       callback(new Error('Amount must be greater than 0'))
     } else if (value > 1000000) {

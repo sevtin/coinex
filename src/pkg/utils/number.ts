@@ -14,3 +14,14 @@ export function stringToNumber(str) {
     // 格式化浮点数，保留最多8位小数
     return parseFloat(num.toFixed(8));
 }
+
+export function stringToPrice(str) {
+    // 将字符串转换为浮点数
+    let num = parseFloat(str);
+    // 如果转换失败，返回NaN
+    if (isNaN(num)) {
+        return 0;
+    }
+    // 格式化浮点数，保留最多2位小数
+    return parseFloat(num.toFixed(2));
+}

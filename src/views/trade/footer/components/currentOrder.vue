@@ -101,6 +101,7 @@ const onCancelOrder = (row: OrderInfo) => {
     if (res.code === 0) {
       lastId = "0";
       loadOrderList();
+      operationStore.updateBalances()
     }
   })
 }

@@ -6,7 +6,6 @@ import type {Ticker} from "@/api/ticker";
 import type {Market} from "@/api/market";
 import {timestampToHourMinute} from "@/pkg/utils/time";
 import {toPercentage} from "@/pkg/utils/number";
-import {price_ratio} from "@/pkg/ratio/ratio";
 
 import {useOperationStore} from "@/stores/operationStore";
 
@@ -21,19 +20,34 @@ const marketHandler = (intvl: number, sub: Subscribe) => {
   if (!sub || !sub.data) {
     return
   }
-  if (tableData.value.length!=0) {
+  if (sub.data.length==0) {
     return;
   }
   interval = intvl;
   const tickers = sub.data as Ticker[];
-  for (let i = 0; i < tickers.length; i++) {
-    const market = toMarket(tickers[i]);
-    tableData.value.push(market);
-    markets.set(market.symbol, market);
-    if (i == 0) {
-      // 更新单个币种
+  if (tickers.length===1) {
+    const market = toMarket(tickers[0]);
+    if (oldMarketId === market.market_id){
       operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close)
     }
+    const existingMarket = markets.get(market.symbol)
+    if (existingMarket) {
+      const index = tableData.value.findIndex(item => item.symbol === market.symbol);
+      if (index !== -1) {
+        tableData.value.splice(index, 1, market);
+      }
+    }
+  }else {
+    let arr = []
+    for (let i = 0; i < tickers.length; i++) {
+      const market = toMarket(tickers[i]);
+      arr.push(market);
+      markets.set(market.symbol, market);
+      if (oldMarketId === market.market_id){
+        operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close)
+      }
+    }
+    tableData.value = arr;
   }
 }
 
@@ -91,7 +105,7 @@ const tickerHandler = (symbol: string, intvl: number, sub: Subscribe) => {
 
 onMounted(() => {
   instance.SetMarketHandler("market.vue", marketHandler)
-  instance.SetTickerHandler("market.vue", tickerHandler)
+  //instance.SetTickerHandler("market.vue", tickerHandler)
 })
 
 const onRowClick = (row: any, column: any, event: Event) => {
