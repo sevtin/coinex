@@ -40,18 +40,12 @@ export const useOperationStore = defineStore('operation', {
         setMarket(intvl: number) {
             this.$state.mrket.intvl = intvl
         },
-        setTicker(market_id: number, symbol: string, intvl: number, open: string, close: string) {
+        setTicker(market_id: number, symbol: string, intvl: number, open: string, close: string, color: string) {
             this.$state.ticker.market_id = market_id;
             this.$state.ticker.symbol = symbol;
             this.$state.ticker.intvl = intvl;
             this.$state.ticker.open = open;
             this.$state.ticker.close = close
-            let color = '#FFFFF0';
-            if (close > open) {
-                color = '#0ECB81';
-            } else if (close < open) {
-                color = '#F6465D';
-            }
             this.$state.ticker.color = color;
 
             this.$state.trade.symbol = symbol;
@@ -60,6 +54,9 @@ export const useOperationStore = defineStore('operation', {
         },
         setTickerPrice(price: string) {
             this.$state.ticker.close = price;
+        },
+        setTickerColor(color: string) {
+            this.$state.ticker.color = color;
         },
         setDepth(levels: number) {
             this.$state.depth.levels = levels;

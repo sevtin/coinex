@@ -26,6 +26,7 @@ import type {FormInstance, FormRules} from 'element-plus'
 import type {Order} from "@/api/order";
 import {createOrder} from "@/api/order";
 import {useOperationStore} from "@/stores/operationStore";
+import {ElMessage} from "element-plus";
 
 const operationStore = useOperationStore()
 
@@ -83,10 +84,17 @@ const submitForm = (formEl: FormInstance | undefined) => {
         side: props.order.side,
         unfilled_qty: ruleForm.amount.toString()
       }).then((res) => {
-        setTimeout(() => {
-          operationStore.updateOrderVersion()
-          operationStore.updateBalances()
-        }, 2000);
+        if (res.code===0) {
+          setTimeout(() => {
+            operationStore.updateOrderVersion()
+            operationStore.updateBalances()
+          }, 2000);
+        }else {
+          ElMessage({
+            message: res.msg || '服务器返回异常',
+            type: 'warning',
+          });
+        }
       })
     } else {
       console.log('error submit!')

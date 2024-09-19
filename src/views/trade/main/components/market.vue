@@ -28,7 +28,7 @@ const marketHandler = (intvl: number, sub: Subscribe) => {
   if (tickers.length===1) {
     const market = toMarket(tickers[0]);
     if (oldMarketId === market.market_id){
-      operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close)
+      operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close, market.color)
     }
     const existingMarket = markets.get(market.symbol)
     if (existingMarket) {
@@ -44,7 +44,7 @@ const marketHandler = (intvl: number, sub: Subscribe) => {
       arr.push(market);
       markets.set(market.symbol, market);
       if (oldMarketId === market.market_id){
-        operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close)
+        operationStore.setTicker(market.market_id, market.symbol, intvl, market.open, market.close, market.color)
       }
     }
     tableData.value = arr;
@@ -73,6 +73,7 @@ const toMarket = ((ticker: Ticker) => {
   if (market.symbol === operationStore.getTicker.symbol && market.intvl === operationStore.getTicker.intvl) {
     // 更新单个币种
     operationStore.setTickerPrice(market.close)
+    operationStore.setTickerColor(market.color)
   }
   market.change = toPercentage((market.close_val - market.pre_close_val) / market.pre_close_val);
   market.color = "#FFFFF0"
@@ -93,7 +94,7 @@ const tickerHandler = (symbol: string, intvl: number, sub: Subscribe) => {
     return
   }
   const market = toMarket(ticker);
-  operationStore.setTicker(market.market_id, market.symbol, market.intvl, market.open, market.close)
+  operationStore.setTicker(market.market_id, market.symbol, market.intvl, market.open, market.close, market.color)
   const existingMarket = markets.get(symbol)
   if (existingMarket) {
     const index = tableData.value.findIndex(item => item.symbol === symbol);
@@ -112,9 +113,10 @@ const onRowClick = (row: any, column: any, event: Event) => {
   if (oldMarketId == row.market_id) {
     return
   }
+  console.log("onRowClick", row)
   oldMarketId = row.market_id
   // 1、先存储
-  operationStore.setTicker(row.market_id, row.symbol, row.intvl, row.open, row.close)
+  operationStore.setTicker(row.market_id, row.symbol, row.intvl, row.open, row.close, row.color)
 
   let topics = ["MARKET@" + operationStore.getMarket.intvl.toString(),
     row.symbol + "@TICKER_" + operationStore.getTicker.intvl.toString(),
