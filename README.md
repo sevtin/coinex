@@ -12,3 +12,5 @@
 
 3、处理cookie跨域：打开控制台，修改cookie的domain。将www.eipistar.com修改为localhost，刷新当前页面即可。
 
+### 后端架构图:
+![swift.jpg](src%2Fassets%2Fswift.jpg)
