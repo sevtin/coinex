@@ -1,6 +1,7 @@
 ### Golang + Vue3 加密币模拟交易所
 
 线上地址：https://www.eipistar.com/
+(备注：每小时重启一次，验证数据完整性)
 
 ![eipistar.png](resource%2Fimages%2Feipistar.png)
 
