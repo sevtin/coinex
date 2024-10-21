@@ -16,3 +16,40 @@
 <center>
 <img src="src/assets/swift.jpg" alt="swift" width="70%"/>
 </center>
+
+### 后端交易引擎基准测试
+#### int64类型基准测试
+```
+saeipi@saeipi xengine % go test -bench=.
+goos: darwin
+goarch: arm64
+pkg: lark/pkg/common/xengine
+BenchmarkSubmitBuyOrders-8                       5645808               223.4 ns/op
+BenchmarkSubmitSellOrders-8                      6197025               232.9 ns/op
+BenchmarkOrderMatching-8                         6565600               223.4 ns/op
+BenchmarkCancelOrders-8                         45432530                23.44 ns/op
+BenchmarkBulkOrderProcessing-8                   4856690               248.6 ns/op
+BenchmarkOrderbook5kLevelsRandomInsert-8        13577226                75.25 ns/op
+BenchmarkOrderbook10kLevelsRandomInsert-8       15151626                82.45 ns/op
+BenchmarkOrderbook20kLevelsRandomInsert-8       12119716                83.93 ns/op
+PASS
+ok      lark/pkg/common/xengine 12.553s
+```
+
+#### decimal类型基准测试
+```
+saeipi@saeipi xengine % go test -bench=.
+goos: darwin
+goarch: arm64
+pkg: lark/pkg/common/xengine
+BenchmarkSubmitBuyOrders-8                       2103273               569.8 ns/op
+BenchmarkSubmitSellOrders-8                      2244198               599.9 ns/op
+BenchmarkOrderMatching-8                         2139739               619.8 ns/op
+BenchmarkCancelOrders-8                          9421946               125.2 ns/op
+BenchmarkBulkOrderProcessing-8                    666296              1670 ns/op
+BenchmarkOrderbook5kLevelsRandomInsert-8         2632840               424.6 ns/op
+BenchmarkOrderbook10kLevelsRandomInsert-8        2358277               575.8 ns/op
+BenchmarkOrderbook20kLevelsRandomInsert-8        1819166               703.7 ns/op
+PASS
+ok      lark/pkg/common/xengine 15.954s
+```
