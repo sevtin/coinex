@@ -18,7 +18,7 @@
 </center>
 
 ### 后端交易引擎基准测试
-#### int64类型基准测试
+#### int64版本基准测试
 ```
 saeipi@saeipi xengine % go test -bench=.
 goos: darwin
@@ -36,7 +36,7 @@ PASS
 ok      lark/pkg/common/xengine 12.553s
 ```
 
-#### decimal类型基准测试
+#### decimal版本基准测试
 ```
 saeipi@saeipi xengine % go test -bench=.
 goos: darwin
