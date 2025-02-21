@@ -1,5 +1,7 @@
 ### Golang + Vue3 加密币模拟交易所
 
+从2024年9月至今无错单/无漏单
+
 线上地址：https://eipistar.us.kg/
 
 ![eipistar.png](resource%2Fimages%2Feipistar.png)
