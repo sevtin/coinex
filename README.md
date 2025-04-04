@@ -2,7 +2,7 @@
 
 从2024年9月至今无错单/无漏单
 
-线上地址：https://eipistar.us.kg/
+线上地址：[https://eipistar.us.kg/](https://eipistar.dpdns.org/)
 
 ![eipistar.png](resource%2Fimages%2Feipistar.png)
 
