@@ -12,7 +12,7 @@
 
 2、运行项目：npm run prod
 
-3、处理cookie跨域：打开控制台，修改Cookies的domain。将eipistar.us.kg修改为localhost，刷新当前页面即可。
+3、处理cookie跨域：打开控制台，修改Cookies的domain。将eipistar.dpdns.org修改为localhost，刷新当前页面即可。
 
 ### 后端架构图:
 <center>
