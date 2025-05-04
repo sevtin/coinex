@@ -4,7 +4,7 @@ import ChartView from '@/views/trade/main/components/chart.vue'
 import TradeView from '@/views/trade/main/components/trade.vue'
 import OrderbookView from '@/views/trade/main/components/orderbook.vue'
 import FilledOrderView from '@/views/trade/main/components/filledOrder.vue'
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch} from 'vue'
 import { useOperationStore } from "@/stores/operationStore";
 
 const operationStore = useOperationStore()
@@ -15,9 +15,10 @@ const isTablet = ref(window.innerWidth >= 768 && window.innerWidth < 1200)
 const isDesktop = ref(window.innerWidth >= 1200)
 
 // 获取当前交易对信息
-const currentSymbol = computed(() => operationStore.getTicker.symbol || 'BTC/USDT')
-const currentPrice = computed(() => operationStore.getTicker.price || '0.00')
-const priceColor = computed(() => operationStore.getTicker.color || '')
+const tickerColor = ref('#FFFFF0');
+const tickerClose = ref('0');
+const tickerOpen = ref('0');
+const tickerSymbol = ref('');
 
 const handleResize = () => {
   isMobile.value = window.innerWidth < 768
@@ -27,11 +28,28 @@ const handleResize = () => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
+
+  // 初始化价格相关数据
+  tickerColor.value = operationStore.getTicker.color
+  tickerClose.value = operationStore.getTicker.close
+  tickerOpen.value = operationStore.getTicker.open
+  tickerSymbol.value = operationStore.getTicker.symbol
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
+
+// 监听价格变化
+watch(
+    operationStore.getTicker,
+    (newTicker, oldTicker) => {
+    tickerColor.value = newTicker.color
+    tickerClose.value = newTicker.close
+    tickerOpen.value = newTicker.open
+    tickerSymbol.value = newTicker.symbol
+    }
+);
 </script>
 
 <template>
@@ -46,8 +64,8 @@ onUnmounted(() => {
       <!-- 仅在移动端显示的交易对信息条 -->
       <div v-if="isMobile" class="symbol-header">
         <div class="symbol-info">
-          <span class="symbol-name">{{ currentSymbol }}</span>
-          <span class="price" :style="{ color: priceColor }">{{ currentPrice }}</span>
+          <span class="symbol-name">{{ tickerSymbol }}</span>
+          <span class="price" :style="{ color: tickerColor }">{{ tickerClose }}</span>
         </div>
       </div>
       
