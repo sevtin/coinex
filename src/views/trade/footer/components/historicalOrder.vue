@@ -129,7 +129,6 @@ defineExpose({
 }
 
 .table-style {
-  background-color: #2c3e50 !important;
   width: 100%;
 }
 
@@ -137,7 +136,6 @@ defineExpose({
 ::v-deep .el-table th,
 ::v-deep .el-table tr {
   color: white;
-  background-color: #2c3e50 !important;
   font-size: 12px;
 }
 

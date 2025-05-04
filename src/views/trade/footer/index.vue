@@ -28,7 +28,7 @@ const onTabsClick = (tab: TabsPaneContext, _: Event) => {
 
 <template>
   <div class="footer-container">
-    <el-tabs v-model="activeName"  @tab-click="onTabsClick">
+    <el-tabs v-model="activeName" @tab-click="onTabsClick" class="order-tabs">
       <el-tab-pane class="current-order-view" label="当前委托" name="current">
         <CurrentOrderView ref="currentRef" :history="false"/>
       </el-tab-pane>
@@ -43,27 +43,53 @@ const onTabsClick = (tab: TabsPaneContext, _: Event) => {
 .footer-container {
   width: 100%;
   min-height: 200px;
+  padding: var(--binance-spacing-md);
+  
+  @media (max-width: 768px) {
+    padding: var(--binance-spacing-sm);
+  }
 }
 
-.current-order-view {
-  width: 100%;
-  min-height: 200px;
+.order-tabs {
+  height: 100%;
+  
+  :deep(.el-tabs__header) {
+    margin-bottom: var(--binance-spacing-md);
+    border-bottom: 1px solid var(--binance-border-base);
+    
+    @media (max-width: 768px) {
+      margin-bottom: var(--binance-spacing-sm);
+    }
+  }
+  
+  :deep(.el-tabs__nav-wrap::after) {
+    background-color: var(--binance-border-base);
+  }
+  
+  :deep(.el-tabs__item) {
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    
+    &.is-active {
+      color: var(--binance-primary) !important;
+    }
+  }
+  
+  :deep(.el-tabs__active-bar) {
+    height: 2px;
+    background-color: var(--binance-primary) !important;
+  }
 }
 
+.current-order-view,
 .historical-order-view {
   width: 100%;
   min-height: 200px;
-}
-
-::v-deep .el-tabs__item.is-active {
-  color: white;
-}
-
-::v-deep .el-tabs__item {
-  color: #666;
-}
-
-::v-deep .el-tabs__nav .el-tabs__active-bar {
-  background-color: #666;
+  
+  @media (max-width: 768px) {
+    min-height: 150px;
+  }
 }
 </style>

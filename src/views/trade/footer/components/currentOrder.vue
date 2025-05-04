@@ -5,6 +5,7 @@ import type {OrderInfo} from "@/api/order";
 import {timestampFormat} from "@/pkg/utils/time";
 import {default as vElTableInfiniteScroll} from "el-table-infinite-scroll";
 import {useOperationStore} from "@/stores/operationStore";
+import { throttle } from 'lodash';
 
 const operationStore = useOperationStore()
 
@@ -25,6 +26,21 @@ onMounted(() => {
   loadOrderList()
 })
 
+
+watch(
+    operationStore.getOrder,
+    (newOrder, oldOrder) => {
+      throttledLoadOrderList();
+    }
+);
+
+// 定义 throttled 版本的 loadOrderList，最多 1 秒调用一次
+const throttledLoadOrderList = throttle(() => {
+  lastId = "0";
+  loadOrderList();
+}, 1000); // 1 秒
+
+/*
 watch(
     operationStore.getOrder,
     (newOrder, oldOrder) => {
@@ -32,7 +48,7 @@ watch(
       loadOrderList();
     }
 );
-
+ */
 const loadOrderList = (() => {
   let oldLastId = lastId;
   orderList({"history": props.history, "limit": pageLimit, "last_id": lastId}).then((res) => {
@@ -149,7 +165,6 @@ const onCancelOrder = (row: OrderInfo) => {
 }
 
 .table-style {
-  background-color: #2c3e50 !important;
   width: 100%;
 }
 
@@ -157,7 +172,6 @@ const onCancelOrder = (row: OrderInfo) => {
 ::v-deep .el-table th,
 ::v-deep .el-table tr {
   color: white;
-  background-color: #2c3e50 !important;
   font-size: 12px;
 }
 

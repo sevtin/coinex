@@ -193,7 +193,17 @@ export class WebSocketClient {
     }
 
     private sendPing(): void {
-        this.socket?.send("PING");
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            try {
+                this.socket.send("PING");
+            } catch (err) {
+                console.error("Error sending PING:", err);
+                this.handleErrorEvent(new Event('error'));
+            }
+        } else {
+            console.warn("Cannot send PING: WebSocket not open.");
+            this.stopHeartbeat();
+        }
     }
 
     private sendPong(): void {
@@ -215,15 +225,19 @@ export class WebSocketClient {
 
     public closeSocket(): void {
         if (this.socket) {
-            this.socket.close();
+            if (this.socket.readyState === WebSocket.OPEN ||
+                this.socket.readyState === WebSocket.CONNECTING) {
+                this.socket.close();
+            }
+            this.socket = null;
         }
         this.stopHeartbeat();
     }
 
-    // 断线重连方法
     private reconnect(): void {
         if (!this.reconnecting) {
             this.reconnecting = true;
+            this.closeSocket(); // 确保旧连接已关闭
             this.scheduleReconnect();
         }
     }

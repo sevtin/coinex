@@ -24,7 +24,7 @@ const tradeHandler = (symbol: string, sub: Subscribe) => {
       price: stringToPrice(item[1]),
       amount: stringToNumber(item[2]),
       direction: item[3],
-      color: item[3] === 1 ? '#0ECB81' : item[3] === 2 ? '#F6465D' : '#FFFFF0',
+      color: item[3] === 1 ? 'var(--binance-buy)' : item[3] === 2 ? 'var(--binance-sell)' : '#FFFFF0',
     };
     return m;
   });
@@ -61,57 +61,103 @@ watch(
 <!--0:平价交易 1:主动买入 2:主动卖出-->
 <template>
   <div class="filled-order-container">
-    <el-table
-        :data="tableData"
-        :highlight-current-row="false"
-        class="table-style"
-        style="height: 800px; width: 100%"
-    >
-      <el-table-column fixed prop="time" label="时间" width="80"/>
-      <el-table-column label="价格" width="110">
-        <template #default="scope">
-          <span
-              :style="{ color: scope.row.color}">{{
-              scope.row.price
-            }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="数量" width="130">
-        <template #default="scope">
-          <span
-              :style="{ color: scope.row.color}">{{
-              scope.row.amount
-            }}</span>
-        </template>
-      </el-table-column>
-      <template v-slot:empty>
-        <div class="table-no-data">暂无数据</div>
-      </template>
-    </el-table>
+    <div class="filled-order-content">
+      <div class="filled-order-list" v-if="tableData.length > 0">
+        <div 
+          v-for="(item, index) in tableData" 
+          :key="index" 
+          class="filled-order-item"
+        >
+          <div class="item-col time">{{ item.time }}</div>
+          <div class="item-col price" :style="{ color: item.color }">{{ item.price }}</div>
+          <div class="item-col amount">{{ item.amount }}</div>
+        </div>
+      </div>
+      
+      <div class="empty-data" v-else>
+        <span>暂无数据</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .filled-order-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--binance-bg-base);
 }
 
-.table-style {
-  background-color: #2c3e50 !important;
+.filled-order-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
-.table-style ::v-deep .el-table th.el-table__cell,
-::v-deep .el-table th,
-::v-deep .el-table tr {
-  color: white;
-  background-color: #2c3e50 !important;
+.filled-order-list {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: linear-gradient(to bottom, var(--binance-bg-base), transparent);
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+
+.filled-order-item {
+  display: flex;
+  padding: 6px 7px;
   font-size: 12px;
+  border-bottom: 1px solid rgba(42, 45, 53, 0.3);
+  
+  &:hover {
+    background-color: var(--binance-bg-tertiary);
+  }
 }
 
-::v-deep .el-table__body .el-table__row.hover-row td {
-  background-color: #1c2e40 !important;
+.item-col {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  &.time {
+    flex: 1;
+    color: var(--binance-text-secondary);
+  }
+  
+  &.price {
+    flex: 1;
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  &.amount {
+    flex: 1.5;
+    text-align: right;
+    color: var(--binance-text-secondary);
+  }
 }
 
+.empty-data {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--binance-text-tertiary);
+  font-style: italic;
+  font-size: 13px;
+}
 </style>

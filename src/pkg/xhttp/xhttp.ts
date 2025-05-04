@@ -17,7 +17,7 @@ class HttpClient {
     constructor() {
         this.instance = axios.create({
             baseURL: import.meta.env.VITE_BASE_API,
-            timeout: 10000, // 设置请求超时时间,
+            timeout: 60000, // 设置请求超时时间,
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
@@ -56,10 +56,12 @@ class HttpClient {
                 return response
             },
             (error) => {
+                /*
                 ElMessage({
                     message: '网络请求失败，请稍后再试',
                     type: 'error',
                 });
+                 */
                 Promise.reject(error)
             }
         );

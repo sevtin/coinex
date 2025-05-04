@@ -1,0 +1,376 @@
+// Binance风格主题变量
+:root {
+  // 主色调 - 币安黄色
+  --binance-primary: #f0b90b;
+  --binance-primary-hover: #f8d33a;
+  --binance-primary-active: #e0aa0b;
+  
+  // 背景色 - 深色背景
+  --binance-bg-base: #0b0e11;     // 更深的背景色
+  --binance-bg-secondary: #161a1e; // 次级背景
+  --binance-bg-tertiary: #222529;  // 三级背景
+  --binance-bg-card: #1e2026;     // 卡片背景
+  
+  // 文本颜色
+  --binance-text-primary: #eaecef;   // 主要文本
+  --binance-text-secondary: #848e9c; // 次要文本
+  --binance-text-tertiary: #5e6673;  // 三级文本
+  
+  // 边框颜色
+  --binance-border-base: #2a2d35;    // 基础边框
+  --binance-border-light: #363a45;   // 浅色边框
+  
+  // 功能色
+  --binance-success: #03a66d;        // 成功/买入绿
+  --binance-success-light: rgba(3, 166, 109, 0.1);
+  --binance-danger: #cf304a;         // 危险/卖出红
+  --binance-danger-light: rgba(207, 48, 74, 0.1);
+  --binance-warning: #f0b90b;        // 警告黄
+  --binance-warning-light: rgba(240, 185, 11, 0.1);
+  
+  // 买卖盘颜色
+  --binance-buy: #0ecb81;            // 买入绿
+  --binance-sell: #f6465d;           // 卖出红
+  
+  // 阴影
+  --binance-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  
+  // 圆角
+  --binance-border-radius-sm: 4px;
+  --binance-border-radius-md: 8px;
+  --binance-border-radius-lg: 12px;
+  
+  // 间距
+  --binance-spacing-xs: 4px;
+  --binance-spacing-sm: 8px;
+  --binance-spacing-md: 16px;
+  --binance-spacing-lg: 24px;
+  --binance-spacing-xl: 32px;
+  
+  // 表格样式
+  --binance-table-header-bg: #121417;
+  --binance-table-body-bg: #1e2026;
+  --binance-table-hover-bg: #2b2f36;
+  --binance-table-border: #2a2d35;
+  
+  // 图表样式
+  --binance-chart-bg: #1e2026;
+  --binance-chart-grid: #2a2d35;
+  --binance-chart-text: #848e9c;
+}
+
+// 响应式断点
+$breakpoints: (
+  'xs': 360px,
+  'sm': 768px,
+  'md': 1024px,
+  'lg': 1440px,
+  'xl': 1920px,
+);
+
+@mixin respond-to($breakpoint) {
+  $size: map-get($breakpoints, $breakpoint);
+  
+  @if $size {
+    @media (min-width: $size) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` not found in $breakpoints.";
+  }
+}
+
+// 重设默认样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--binance-bg-base);
+  color: var(--binance-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Element Plus重写样式
+.el-button--primary {
+  background-color: var(--binance-primary) !important;
+  border-color: var(--binance-primary) !important;
+  color: var(--binance-bg-base) !important;
+  font-weight: 500 !important;
+  
+  &:hover {
+    background-color: var(--binance-primary-hover) !important;
+    border-color: var(--binance-primary-hover) !important;
+  }
+  
+  &:active {
+    background-color: var(--binance-primary-active) !important;
+    border-color: var(--binance-primary-active) !important;
+  }
+}
+
+.el-button {
+  border-radius: var(--binance-border-radius-sm) !important;
+}
+
+.el-input__wrapper {
+  background-color: var(--binance-bg-tertiary) !important;
+  border-color: var(--binance-border-base) !important;
+  border-radius: var(--binance-border-radius-sm) !important;
+  
+  &.is-focus {
+    box-shadow: 0 0 0 1px var(--binance-primary) !important;
+  }
+}
+
+.el-input__inner {
+  color: var(--binance-text-primary) !important;
+}
+
+.el-tabs__item {
+  color: var(--binance-text-secondary) !important;
+  
+  &.is-active {
+    color: var(--binance-primary) !important;
+  }
+}
+
+.el-tabs__active-bar {
+  background-color: var(--binance-primary) !important;
+}
+
+// 表格组件样式统一
+.el-table {
+  background-color: var(--binance-table-body-bg) !important;
+  color: var(--binance-text-primary) !important;
+  font-size: 13px !important;
+  
+  &::before {
+    background-color: var(--binance-border-base) !important;
+    height: 1px !important;
+  }
+  
+  th.el-table__cell {
+    background-color: var(--binance-table-header-bg) !important;
+    color: var(--binance-text-secondary) !important;
+    font-weight: 500 !important;
+    border-bottom: 1px solid var(--binance-table-border) !important;
+    padding: 8px 0 !important;
+    font-size: 12px !important;
+  }
+  
+  .el-table__row {
+    background-color: var(--binance-table-body-bg) !important;
+    
+    td.el-table__cell {
+      border-bottom: 1px solid var(--binance-table-border) !important;
+      padding: 8px 0 !important;
+    }
+    
+    &:hover > td.el-table__cell {
+      background-color: var(--binance-table-hover-bg) !important;
+    }
+    
+    &.current-row > td.el-table__cell {
+      background-color: var(--binance-table-hover-bg) !important;
+    }
+  }
+  
+  .el-table__empty-block {
+    background-color: var(--binance-table-body-bg) !important;
+    
+    .el-table__empty-text {
+      color: var(--binance-text-tertiary) !important;
+    }
+  }
+  
+  .el-scrollbar__bar {
+    background-color: var(--binance-bg-tertiary) !important;
+  }
+}
+
+// El-Radio Button 样式统一
+.el-radio-button__inner {
+  background-color: var(--binance-bg-tertiary) !important;
+  border-color: var(--binance-border-base) !important;
+  color: var(--binance-text-secondary) !important;
+  font-size: 12px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  
+  &:hover {
+    color: var(--binance-primary) !important;
+  }
+}
+
+.el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background-color: var(--binance-primary) !important;
+  border-color: var(--binance-primary) !important;
+  color: var(--binance-bg-base) !important;
+  box-shadow: -1px 0 0 0 var(--binance-primary) !important;
+}
+
+.el-radio-group {
+  --el-radio-button-checked-bg-color: var(--binance-primary);
+  --el-radio-button-checked-text-color: var(--binance-bg-base);
+  --el-radio-button-checked-border-color: var(--binance-primary);
+}
+
+// 自定义公共样式类
+.text-buy {
+  color: var(--binance-buy) !important;
+}
+
+.text-sell {
+  color: var(--binance-sell) !important;
+}
+
+.text-primary {
+  color: var(--binance-primary) !important;
+}
+
+.bg-card {
+  background-color: var(--binance-bg-card) !important;
+  border-radius: var(--binance-border-radius-md);
+  box-shadow: var(--binance-shadow);
+}
+
+// 响应式容器
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--binance-spacing-md);
+  
+  @include respond-to('sm') {
+    max-width: 100%;
+    padding: 0 var(--binance-spacing-sm);
+  }
+  
+  @include respond-to('md') {
+    max-width: 100%;
+    padding: 0 var(--binance-spacing-md);
+  }
+  
+  @include respond-to('lg') {
+    max-width: 100%;
+    padding: 0 var(--binance-spacing-md);
+  }
+  
+  @include respond-to('xl') {
+    max-width: 100%;
+    padding: 0 var(--binance-spacing-lg);
+  }
+}
+
+// 栅格系统
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 calc(-1 * var(--binance-spacing-md));
+}
+
+.col {
+  padding: 0 var(--binance-spacing-md);
+  flex-grow: 1;
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 calc(#{$i} / 12 * 100%);
+    max-width: calc(#{$i} / 12 * 100%);
+  }
+  
+  @each $breakpoint, $size in $breakpoints {
+    @include respond-to($breakpoint) {
+      .col-#{$breakpoint}-#{$i} {
+        flex: 0 0 calc(#{$i} / 12 * 100%);
+        max-width: calc(#{$i} / 12 * 100%);
+      }
+    }
+  }
+}
+
+// 修复一些常见布局问题
+.el-tabs--card > .el-tabs__header {
+  border-bottom: 1px solid var(--binance-border-base) !important;
+  margin: 0 !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: 1px solid var(--binance-border-base) !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border-left: 1px solid var(--binance-border-base) !important;
+  border-bottom: 1px solid var(--binance-border-base) !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-bottom-color: var(--binance-primary) !important;
+  background-color: var(--binance-primary) !important;
+  color: var(--binance-bg-base) !important;
+  font-weight: 500 !important;
+}
+
+// 图表容器样式
+.chart-container {
+  background-color: var(--binance-chart-bg) !important;
+  border: 1px solid var(--binance-border-base) !important;
+  border-radius: var(--binance-border-radius-md) !important;
+  overflow: hidden !important;
+}
+
+// 时间选择器样式
+.time-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--binance-spacing-xs);
+  padding: var(--binance-spacing-xs) var(--binance-spacing-sm);
+  background-color: var(--binance-bg-tertiary);
+  border-radius: var(--binance-border-radius-sm);
+  
+  .time-item {
+    padding: 4px 8px;
+    border-radius: var(--binance-border-radius-sm);
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--binance-text-secondary);
+    
+    &:hover {
+      background-color: rgba(240, 185, 11, 0.1);
+      color: var(--binance-primary);
+    }
+    
+    &.active {
+      background-color: var(--binance-primary);
+      color: var(--binance-bg-base);
+    }
+  }
+}
+
+// 全局滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--binance-bg-tertiary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--binance-border-light);
+  border-radius: 3px;
+  
+  &:hover {
+    background: var(--binance-text-tertiary);
+  }
+} 

@@ -1,7 +1,11 @@
 <template>
   <div class="limit-container">
-    <LimitItemView class="item-view" :order="buy"/>
-    <LimitItemView class="item-view" :order="sell"/>
+    <div class="limit-item buy-item">
+      <LimitItemView :order="buy"/>
+    </div>
+    <div class="limit-item sell-item">
+      <LimitItemView :order="sell"/>
+    </div>
   </div>
 </template>
 
@@ -35,13 +39,22 @@ onMounted(() => {
 <style scoped lang="scss">
 .limit-container {
   width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
-  gap: 50px;
+  gap: 8px;
+  height: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 
-.item-view {
-  width: 45%;
+.limit-item {
+  flex: 1;
+  display: flex;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 </style>

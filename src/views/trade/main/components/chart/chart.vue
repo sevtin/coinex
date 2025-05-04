@@ -41,6 +41,8 @@ const chartData: Kline[] = [];
 const volumeData: Volume[] = [];
 const legendRef = ref<HTMLElement | null>(null);
 const hoveredData = ref<BarVal | null>(null);
+const chartContainerWidth = ref(0);
+const chartContainerHeight = ref(0);
 
 let chart: IChartApi;
 let candleSeries: ISeriesApi<"Candlestick">;
@@ -106,66 +108,111 @@ const formatKLineInfo = (line: KlineInfo): Kline => ({
 });
 
 // 创建交易量条目
-const createVolume = (kline: Kline): Volume => ({
-  time: kline.time,
-  value: stringToNumber(kline.value),
-  color: 'rgba(82, 219, 237, 0.56)',
-});
+const createVolume = (kline: Kline): Volume => {
+  const color = kline.close >= kline.open 
+    ? 'rgba(14, 203, 129, 0.5)' // 上涨
+    : 'rgba(246, 70, 93, 0.5)';  // 下跌
+  
+  return {
+    time: kline.time,
+    value: stringToNumber(kline.value),
+    color: color,
+  };
+};
+
+const handleResize = () => {
+  const chartElement = document.getElementById('candlestick');
+  if (chartElement) {
+    const container = chartElement.parentElement;
+    if (container) {
+      chartContainerWidth.value = container.clientWidth || 800;
+      chartContainerHeight.value = container.clientHeight || 400;
+      
+      if (chart) {
+        chart.resize(
+          chartContainerWidth.value, 
+          chartContainerHeight.value
+        );
+      }
+    }
+  }
+};
 
 onMounted(() => {
-
+  const chartElement = document.getElementById('candlestick');
+  if (chartElement) {
+    const container = chartElement.parentElement;
+    if (container) {
+      chartContainerWidth.value = container.clientWidth || 800;
+      chartContainerHeight.value = container.clientHeight || 400;
+    }
+  }
+  
   chart = createChart(document.getElementById('candlestick'), {
-    width: 848,
-    height: 494,
+    width: chartContainerWidth.value,
+    height: chartContainerHeight.value,
     // 配置图表的基本布局和样式
     layout: {
-      background: {type: 'solid', color: '#2c3e50'},
-      textColor: '#d1d4dc'
+      background: { type: 'solid', color: '#1e2026' },
+      textColor: '#848e9c'
     },
     // 配置网格线
     grid: {
-      vertLines: {visible: false},
-      horzLines: {color: 'rgba(42, 46, 57, 0.5)'}
+      vertLines: { color: 'rgba(42, 45, 53, 0.5)', style: 1, visible: true },
+      horzLines: { color: 'rgba(42, 45, 53, 0.5)', style: 1, visible: true }
     },
     // 配置右侧价格刻度尺
     rightPriceScale: {
-      borderVisible: true,
-      scaleMargins: {top: 0.2, bottom: 0.2}
+      borderVisible: false,
+      scaleMargins: { top: 0.1, bottom: 0.2 }
     },
     // 配置十字准线
     crosshair: {
-      horzLine: {}
+      mode: 1,
+      vertLine: {
+        color: '#848e9c',
+        width: 1,
+        style: 1,
+        labelBackgroundColor: '#1e2026',
+      },
+      horzLine: {
+        color: '#848e9c',
+        width: 1,
+        style: 1,
+        labelBackgroundColor: '#1e2026',
+      }
     },
     // 配置时间刻度尺
     timeScale: {
       visible: true,
       timeVisible: true,
       secondsVisible: false,
-      borderVisible: true
+      borderVisible: false,
+      borderColor: '#2a2d35'
     }
   });
 
   // 添加 K 线（蜡烛图）系列
   candleSeries = chart.addCandlestickSeries({
-    upColor: 'rgb(14, 203, 129)',
-    downColor: 'rgb(246, 70, 93)',
-    borderDownColor: 'rgb(246, 70, 93)',
-    borderUpColor: 'rgb(14, 203, 129)',
-    wickDownColor: 'rgb(246, 70, 93)',
-    wickUpColor: 'rgb(14, 203, 129)',
-    // crossHairMarkerVisible: false
+    upColor: '#0ecb81',         // 上涨颜色：绿色
+    downColor: '#f6465d',       // 下跌颜色：红色
+    borderUpColor: '#0ecb81',
+    borderDownColor: '#f6465d',
+    wickUpColor: '#0ecb81',
+    wickDownColor: '#f6465d',
+    priceFormat: { type: 'price', precision: 2 }
   });
 
   // 添加交易量柱状图系列
   volumeSeries = chart.addHistogramSeries({
-    priceFormat: {type: 'volume'},
+    color: 'rgba(14, 203, 129, 0.5)',
+    priceFormat: { type: 'volume' },
     priceScaleId: '',
-    // crossHairMarkerVisible: false
   });
 
   // 配置价格刻度尺的边距
   chart.priceScale('').applyOptions({
-    scaleMargins: {top: 0.8, bottom: 0}
+    scaleMargins: { top: 0.8, bottom: 0 }
   });
 
   chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
@@ -201,8 +248,10 @@ onMounted(() => {
   // 自适应显示全部内容
   chart.timeScale().fitContent();
 
-  instance.SetKlineHandler("chart.chart.vue", klineHandler)
-})
+  instance.SetKlineHandler("chart.chart.vue", klineHandler);
+  
+  window.addEventListener('resize', handleResize);
+});
 
 watch(
     operationStore.getKline,
@@ -255,52 +304,76 @@ function loadMoreData() {
 
 <template>
   <div class="chart-view">
-    <div class="value-view">
-      <div v-if="hoveredData" class="items-view">
-        <div class="value-item">Time: {{ hoveredData.time }}</div>
-        <div class="value-item">Open: {{ hoveredData.open }}</div>
-        <div class="value-item">Close: {{ hoveredData.close }}</div>
-        <div class="value-item">High: {{ hoveredData.high }}</div>
-        <div class="value-item">Low: {{ hoveredData.low }}</div>
-        <div class="value-item">Value: {{ hoveredData.val }}</div>
+    <div class="chart-info" v-if="hoveredData">
+      <div class="info-row">
+        <span class="info-label">时间:</span>
+        <span class="info-value time-value">{{ hoveredData.time }}</span>
+        <span class="info-label">开:</span>
+        <span class="info-value">{{ hoveredData.open }}</span>
+        <span class="info-label">高:</span>
+        <span class="info-value">{{ hoveredData.high }}</span>
+        <span class="info-label">低:</span>
+        <span class="info-value">{{ hoveredData.low }}</span>
+        <span class="info-label">收:</span>
+        <span class="info-value">{{ hoveredData.close }}</span>
+        <span class="info-label">量:</span>
+        <span class="info-value">{{ hoveredData.val.toFixed(6) }}</span>
       </div>
     </div>
     <div id="chart-container">
       <div id="candlestick"></div>
-      <div ref="legendRef"></div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .chart-view {
-  gap: 4px;
-}
-
-.value-view {
   width: 100%;
-  height: 40px;
-  //border: 1px solid #1E2329;
+  height: 100%;
+  position: relative;
+  background-color: #1e2026;
 }
 
-.items-view {
-  width: 100%;
-  height: 40px;
-  display: flex;
-}
-
-.value-item {
-  padding: 4px;
-  min-width: 50px;
-  text-align: center;
-  color: #d9ecff;
+.chart-info {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
   font-size: 12px;
+  
+  .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    background-color: rgba(30, 32, 38, 0.8);
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #2a2d35;
+  }
+  
+  .info-label {
+    color: #848e9c;
+    font-weight: 500;
+  }
+  
+  .info-value {
+    color: #eaecef;
+    font-weight: 500;
+    margin-right: 8px;
+  }
+  
+  .time-value {
+    margin-right: 16px;
+  }
 }
 
 #chart-container {
-  width: 848px;
-  height: 494px;
+  width: 100%;
+  height: 100%;
 }
 
+#candlestick {
+  width: 100%;
+  height: 100%;
+}
 </style>

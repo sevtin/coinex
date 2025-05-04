@@ -62,47 +62,91 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="kline-container">
-    <div class="radio-group-view">
-      <el-radio-group v-model="selectedInterval" @change="intervalHandler" style="margin-bottom: 30px">
-        <el-radio-button v-for="interval in intervals" :key="interval.intvl" :value="interval.intvl">{{
-            interval.name
-          }}
-        </el-radio-button>
-      </el-radio-group>
+    <div class="time-interval-selector">
+      <div class="interval-options">
+        <div 
+          v-for="interval in intervals" 
+          :key="interval.intvl" 
+          :class="['interval-item', selectedInterval === interval.intvl ? 'active' : '']"
+          @click="selectedInterval = interval.intvl; intervalHandler(interval.intvl)">
+          {{ interval.name }}
+        </div>
+      </div>
     </div>
-    <div class="chart-view">
+    <div class="chart-view-container">
       <ChartView/>
     </div>
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
 .kline-container {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  background-color: #1e2026;
 }
 
-.radio-group-view {
-  height: 40px;
+.time-interval-selector {
+  height: 36px;
   display: flex;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 4px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #1e2026;
+  
+  .interval-options {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    padding: 0 8px;
+    height: 100%;
+    
+    /* 隐藏水平滚动条 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
+  }
+  
+  .interval-item {
+    font-size: 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    white-space: nowrap;
+    color: #848e9c;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #eaecef;
+    }
+    
+    &.active {
+      color: #f0b90b;
+      font-weight: 500;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 12px;
+        right: 12px;
+        height: 2px;
+        background-color: #f0b90b;
+        border-radius: 2px 2px 0 0;
+      }
+    }
+  }
 }
 
-.chart-view {
-  width: 100%;
-}
-
-::v-deep .el-radio-button__inner {
-  color: #333;
-}
-
-::v-deep .el-radio-button__inner.v-model:checked::v-deep .el-radio-button__inner {
-  background-color: #333;
-  color: #000;
+.chart-view-container {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+  background-color: #1e2026;
 }
 </style>

@@ -1,7 +1,11 @@
 <template>
   <div class="market-container">
-    <MarketItemView class="item-view" :order="buy"/>
-    <MarketItemView class="item-view" :order="sell"/>
+    <div class="market-item buy-item">
+      <MarketItemView :order="buy"/>
+    </div>
+    <div class="market-item sell-item">
+      <MarketItemView :order="sell"/>
+    </div>
   </div>
 </template>
 
@@ -35,13 +39,22 @@ onMounted(() => {
 <style scoped lang="scss">
 .market-container {
   width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
-  gap: 50px;
+  gap: 8px;
+  height: 100%; /* 确保容器高度占满父元素 */
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 
-.item-view {
-  width: 45%;
+.market-item {
+  flex: 1;
+  display: flex;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 </style>
