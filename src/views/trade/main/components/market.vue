@@ -206,26 +206,33 @@ const onRowClick = (row: any, column: any, event: Event) => {
   display: flex;
   flex-direction: column;
   background-color: var(--binance-bg-base);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .market-header {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: rgba(0, 0, 0, 0.05);
+  z-index: 3;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background-color: rgba(var(--v-theme-surface-darken-1), 0.3);
+  background-color: rgba(30, 32, 38, 0.5);
   border-radius: 6px;
-  padding: 9px 14px;
+  padding: 10px 14px;
   transition: all 0.3s ease;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.03);
   
   &:focus-within {
-    border-color: rgba(var(--v-theme-primary), 0.3);
-    background-color: rgba(var(--v-theme-surface-darken-1), 0.5);
-    box-shadow: 0 0 0 2px rgba(var(--v-theme-primary), 0.05);
+    border-color: rgba(240, 185, 11, 0.3);
+    background-color: rgba(30, 32, 38, 0.7);
+    box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
     
     .search-icon {
       opacity: 1;
@@ -240,7 +247,7 @@ const onRowClick = (row: any, column: any, event: Event) => {
   }
   
   .search-icon {
-    margin-right: 9px;
+    margin-right: 10px;
     color: var(--binance-text-tertiary);
     opacity: 0.7;
   }
@@ -269,11 +276,15 @@ const onRowClick = (row: any, column: any, event: Event) => {
 
 .list-header {
   display: flex;
-  padding: 12px;
+  padding: 12px 14px;
   font-size: 13px;
   font-weight: 500;
   color: var(--binance-text-secondary);
-  background-color: rgba(var(--v-theme-surface-darken-1), 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .header-item {
@@ -297,19 +308,40 @@ const onRowClick = (row: any, column: any, event: Event) => {
 .market-items {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
 }
 
 .market-item {
   display: flex;
-  padding: 12px;
+  padding: 12px 14px;
   font-size: 14px;
   cursor: pointer;
   background-color: var(--binance-bg-base);
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   
-  &:hover, &.active {
-    background-color: rgba(var(--v-theme-surface-darken-1), 0.3);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  
+  &.active {
+    background-color: rgba(240, 185, 11, 0.05);
+    border-left: 3px solid var(--binance-primary);
+    padding-left: 11px;
   }
 }
 
@@ -335,12 +367,13 @@ const onRowClick = (row: any, column: any, event: Event) => {
 }
 
 .change-badge {
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
   min-width: 60px;
   text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .empty-data {

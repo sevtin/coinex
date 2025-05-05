@@ -11,6 +11,7 @@ const operationStore = useOperationStore()
 
 const bids = ref<DepthItem[]>([]);
 const asks = ref<DepthItem[]>([]);
+const maxOrdersToDisplay = 12; // 限制显示的最大订单数量
 
 // 价格相关数据
 const tickerColor = ref('#FFFFF0');
@@ -48,8 +49,14 @@ const depthHandler = (symbol: string, levels: number, sub: Subscribe) => {
     return
   }
   let depth = sub.data as Depth
-  asks.value = getDepthItems(depth.asks, depth.ts, false)
-  bids.value = getDepthItems(depth.bids, depth.ts, true)
+  
+  // 获取订单并限制数量
+  let askItems = getDepthItems(depth.asks, depth.ts, true);
+  let bidItems = getDepthItems(depth.bids, depth.ts, true);
+  
+  // 限制显示的订单数量
+  asks.value = askItems.slice(0, maxOrdersToDisplay);
+  bids.value = bidItems.slice(0, maxOrdersToDisplay);
 }
 
 const getDepthItems = (values: string[][], ts: number, bid: boolean): DepthItem[] => {
@@ -171,15 +178,18 @@ watch(
   display: flex;
   flex-direction: column;
   background-color: var(--binance-bg-base);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .orderbook-header {
-  padding: 7px 6px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.05);
   
   .header-title {
     font-size: 13px;
@@ -191,9 +201,10 @@ watch(
 
 .orderbook-columns {
   display: flex;
-  padding: 5px 6px;
-  background-color: rgba(var(--v-theme-surface-darken-1), 0.2);
+  padding: 6px 8px;
+  background-color: rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   
   .column-header {
     flex: 1;
@@ -216,18 +227,20 @@ watch(
   /* 确保高度分配正确 */
   .asks-container,
   .bids-container {
-    height: calc(50% - 25px); /* 考虑到中间价格条的高度，均分剩余空间 */
-    max-height: calc(50% - 25px);
+    height: calc(50% - 30px);
+    max-height: calc(50% - 30px);
+    overflow: hidden;
   }
 }
 
 .asks-container {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
-  flex-direction: column-reverse; /* 反向排列，最低卖单在底部 */
+  flex-direction: column-reverse;
   min-height: 0;
-  justify-content: flex-end; /* 确保内容从底部开始 */
+  justify-content: flex-top;
+  background-color: rgba(246, 70, 93, 0.02);
   
   /* 为了确保卖单区域正确显示空白状态 */
   &:empty {
@@ -236,38 +249,40 @@ watch(
   
   /* 反转卖单排序，最低价格显示在底部 */
   .order-item {
-    order: 1; /* 所有订单项目在反向布局中保持正常顺序 */
+    order: 1;
   }
   
   .empty-row {
-    order: 0; /* 空行显示在中间 */
+    order: 0;
   }
 }
 
 .bids-container {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  background-color: rgba(14, 203, 129, 0.02);
 }
 
 .order-item {
   display: flex;
-  padding: 6px 6px;
+  padding: 7px 10px;
   font-size: 12px;
   position: relative;
+  transition: background-color 0.15s ease;
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(255, 255, 255, 0.04);
   }
   
   &.ask {
-    border-bottom: 1px solid rgba(246, 70, 93, 0.05); /* 改为底部边框，因为反向排列 */
+    border-bottom: 1px solid rgba(246, 70, 93, 0.07);
   }
   
   &.bid {
-    border-top: 1px solid rgba(14, 203, 129, 0.05);
+    border-top: 1px solid rgba(14, 203, 129, 0.07);
   }
 }
 
@@ -291,36 +306,40 @@ watch(
 }
 
 .price-info-container {
-  padding: 8px 6px;
-  background-color: rgba(var(--v-theme-surface-darken-1), 0.3);
+  padding: 10px 8px;
+  background-color: rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .price-info-wrapper {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
-  justify-content: center; /* 水平居中 */
+  justify-content: center;
 }
 
 .symbol-name {
   font-size: 11px;
   font-weight: 600;
   color: var(--binance-text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2px 4px;
+  border-radius: 2px;
 }
 
 .current-price {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   display: flex;
   align-items: center;
   
   .trend-icon {
     font-size: 12px;
-    margin-right: 2px;
+    margin-right: 3px;
     
     &.up {
       color: var(--binance-buy);
@@ -334,9 +353,10 @@ watch(
 
 .price-change {
   font-size: 10px;
-  padding: 2px 4px;
-  border-radius: 2px;
+  padding: 3px 6px;
+  border-radius: 4px;
   font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .empty-row {

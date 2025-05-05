@@ -86,20 +86,26 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   background-color: #1e2026;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .time-interval-selector {
-  height: 36px;
+  height: 38px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background-color: #1e2026;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: rgba(30, 32, 38, 0.95);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 5;
   
   .interval-options {
     display: flex;
     align-items: center;
     overflow-x: auto;
-    padding: 0 8px;
+    padding: 0 10px;
     height: 100%;
     
     /* 隐藏水平滚动条 */
@@ -114,20 +120,23 @@ onBeforeUnmount(() => {
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 14px;
+    margin: 0 1px;
     white-space: nowrap;
     color: #848e9c;
     cursor: pointer;
     position: relative;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
     
     &:hover {
       color: #eaecef;
+      background-color: rgba(255, 255, 255, 0.03);
     }
     
     &.active {
       color: #f0b90b;
       font-weight: 500;
+      background-color: rgba(240, 185, 11, 0.05);
       
       &:after {
         content: '';
@@ -135,9 +144,9 @@ onBeforeUnmount(() => {
         bottom: 0;
         left: 12px;
         right: 12px;
-        height: 2px;
+        height: 3px;
         background-color: #f0b90b;
-        border-radius: 2px 2px 0 0;
+        border-radius: 3px 3px 0 0;
       }
     }
   }
@@ -148,5 +157,6 @@ onBeforeUnmount(() => {
   min-height: 300px;
   position: relative;
   background-color: #1e2026;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 </style>

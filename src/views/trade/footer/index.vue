@@ -43,22 +43,24 @@ const onTabsClick = (tab: TabsPaneContext, _: Event) => {
 .footer-container {
   width: 100%;
   min-height: 200px;
-  padding: var(--binance-spacing-md);
+  padding: 0;
   
   @media (max-width: 768px) {
-    padding: var(--binance-spacing-sm);
+    padding: 0;
   }
 }
 
 .order-tabs {
-  height: 100%;
+  width: 100%;
   
   :deep(.el-tabs__header) {
-    margin-bottom: var(--binance-spacing-md);
+    padding: 0 var(--binance-spacing-md);
+    margin-bottom: 8px;
     border-bottom: 1px solid var(--binance-border-base);
     
     @media (max-width: 768px) {
-      margin-bottom: var(--binance-spacing-sm);
+      padding: 0 var(--binance-spacing-sm);
+      margin-bottom: 6px;
     }
   }
   
@@ -81,15 +83,25 @@ const onTabsClick = (tab: TabsPaneContext, _: Event) => {
     height: 2px;
     background-color: var(--binance-primary) !important;
   }
+  
+  :deep(.el-tabs__content) {
+    width: 100%;
+    height: calc(100% - 48px); /* 减去标签头的高度 */
+    padding: 0 var(--binance-spacing-md);
+    
+    @media (max-width: 768px) {
+      padding: 0 var(--binance-spacing-sm);
+    }
+  }
+  
+  :deep(.el-tab-pane) {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
 }
 
-.current-order-view,
-.historical-order-view {
+.current-order-view, .historical-order-view {
   width: 100%;
-  min-height: 200px;
-  
-  @media (max-width: 768px) {
-    min-height: 150px;
-  }
 }
 </style>

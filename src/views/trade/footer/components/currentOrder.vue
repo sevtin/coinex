@@ -128,22 +128,22 @@ const onCancelOrder = (row: OrderInfo) => {
   <div class="current-order-container">
     <el-table
         :data="tableData"
-        style="height: 400px;"
+        style="height: 400px; width: 100%;"
         class="table-style"
         v-el-table-infinite-scroll="loadOrderList"
         :infinite-scroll-distance="20"
         :infinite-scroll-disabled="!hasMore"
     >
-      <el-table-column prop="ts_str" label="时间" width="180"/>
-      <el-table-column prop="order_id" label="订单ID" width="180"/>
-      <el-table-column prop="symbol" label="交易对" width="140"/>
-      <el-table-column prop="side_str" label="买/卖" width="100"/>
-      <el-table-column prop="order_type_str" label="订单类型" width="140"/>
-      <el-table-column prop="order_status_str" label="订单状态" width="140"/>
-      <el-table-column prop="price_str" label="委托价格" width="200"/>
-      <el-table-column prop="qty_str" label="成交/未成交数量" width="320"/>
-      <el-table-column prop="filled_amt" label="成交金额" width="220"/>
-      <el-table-column fixed="right" label="操作" width="140" v-if="!history">
+      <el-table-column prop="ts_str" label="时间" min-width="120"/>
+      <el-table-column prop="order_id" label="订单ID" min-width="120"/>
+      <el-table-column prop="symbol" label="交易对" min-width="100"/>
+      <el-table-column prop="side_str" label="买/卖" min-width="70"/>
+      <el-table-column prop="order_type_str" label="订单类型" min-width="100"/>
+      <el-table-column prop="order_status_str" label="订单状态" min-width="100"/>
+      <el-table-column prop="price_str" label="委托价格" min-width="120"/>
+      <el-table-column prop="qty_str" label="成交/未成交数量" min-width="150"/>
+      <el-table-column prop="filled_amt" label="成交金额" min-width="120"/>
+      <el-table-column fixed="right" label="操作" min-width="100" v-if="!history">
         <template #default="scope">
           <div v-if="scope.row.order_status < 2">
             <el-button size="small" type="success" @click="onCancelOrder(scope.row)">取消</el-button>
@@ -155,27 +155,60 @@ const onCancelOrder = (row: OrderInfo) => {
 </template>
 
 <style scoped lang="scss">
-
 .current-order-container {
   width: 100%;
   min-height: 100px;
   display: flex;
-  flex-direction: column; /* 垂直方向布局 */
-  justify-content: center; /* 子元素垂直居中 */
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
 }
 
 .table-style {
   width: 100%;
+  overflow-x: auto;
 }
 
-.table-style ::v-deep .el-table th.el-table__cell,
-::v-deep .el-table th,
-::v-deep .el-table tr {
+// 修改表格样式，确保填满页面
+:deep(.el-table) {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+// 设置表格容器填满父容器
+:deep(.el-table__inner-wrapper) {
+  width: 100%;
+}
+
+// 表头和单元格样式
+:deep(.el-table th.el-table__cell),
+:deep(.el-table th),
+:deep(.el-table tr) {
   color: white;
   font-size: 12px;
 }
 
-::v-deep .el-table__body .el-table__row.hover-row td {
+// 悬停效果
+:deep(.el-table__body .el-table__row.hover-row td) {
   background-color: #1c2e40 !important;
+}
+
+// 确保表格内容不会被截断
+:deep(.el-table__body-wrapper) {
+  overflow-x: auto;
+}
+
+// 移除表格内边距
+:deep(.el-table__header-wrapper),
+:deep(.el-table__body-wrapper) {
+  margin: 0;
+  padding: 0;
+}
+
+// 确保表格内容紧贴边缘
+:deep(.el-table__inner-wrapper) {
+  padding: 0;
+  margin: 0;
 }
 </style>

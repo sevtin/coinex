@@ -122,7 +122,7 @@ watch(
   height: 100%;
   display: grid;
   gap: 3px;
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0.15);
   
   &.mobile-layout {
     grid-template-columns: 1fr;
@@ -152,6 +152,7 @@ watch(
   border-radius: 1px;
   border: none;
   overflow: hidden;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   
   &.market-panel {
     height: 100%;
@@ -164,7 +165,7 @@ watch(
     flex-direction: column;
     gap: 3px;
     padding: 0;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.12);
     height: 100%;
   }
   
@@ -179,9 +180,10 @@ watch(
 .symbol-header {
   display: flex;
   align-items: center;
-  padding: var(--binance-spacing-sm);
-  border-radius: 0;
+  padding: var(--binance-spacing-sm) var(--binance-spacing-md);
+  border-radius: 2px 2px 0 0;
   background-color: var(--binance-bg-base);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   
   .symbol-info {
     display: flex;
@@ -203,9 +205,10 @@ watch(
 .chart-container {
   flex: 2.5;
   min-height: 400px;
-  border-radius: 0;
+  border-radius: 3px;
   overflow: hidden;
   background-color: #1e2026;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
   
   @media (max-width: 768px) {
     min-height: 400px;
@@ -215,7 +218,7 @@ watch(
 .trade-container {
   flex: 1;
   margin-top: 0;
-  border-radius: 0;
+  border-radius: 3px;
   background-color: var(--binance-bg-base);
   border: none;
   overflow: auto;
@@ -229,9 +232,10 @@ watch(
 }
 
 .filled-orders-header {
-  padding: 7px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .panel-title {
@@ -243,7 +247,7 @@ watch(
 
 .mobile-tabs {
   margin-top: 0;
-  border-radius: 0;
+  border-radius: 3px;
   background-color: var(--binance-bg-base);
   border: none;
   overflow: hidden;
@@ -255,7 +259,8 @@ watch(
   
   :deep(.el-tabs__header) {
     margin: 0;
-    background-color: var(--binance-bg-base);
+    background-color: var(--binance-bg-secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   
   :deep(.el-tabs__nav) {
@@ -269,13 +274,19 @@ watch(
     
     &.is-active {
       color: var(--binance-primary);
-      background-color: transparent;
+      background-color: rgba(240, 185, 11, 0.05);
       font-weight: 500;
+    }
+    
+    &:hover {
+      color: var(--binance-text-primary);
+      background-color: rgba(255, 255, 255, 0.03);
     }
   }
   
   :deep(.el-tabs__active-bar) {
     background-color: var(--binance-primary);
+    height: 3px;
   }
 }
 
